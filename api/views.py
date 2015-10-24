@@ -99,6 +99,7 @@ def get_match_details(request):
         for hit_id, hit_data in json.loads(request.POST['hits_received']).items():
             received_hit_ids.append(hit_id)
             if hit_id not in previously_received_hits:
+                #if p.player_id != hit_data['player_id']: #Ensure player didn't shoot themselves
                 new_hit = Hit(**{
                     "client_hit_id": hit_id,
                     "to_player_id": p.player_id,
