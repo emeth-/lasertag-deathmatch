@@ -39,11 +39,14 @@ function end_match() {
 }
 
 function process_hit() {
-    hits_received[makeid()] = {
+    var hit_info = {
         "player_id": other_players_in_room[Math.floor(Math.random() * other_players_in_room.length)],
         "time": Math.floor(new Date().getTime()/1000),
         "shot_location": shot_locations[Math.floor(Math.random() * shot_locations.length)]
     };
+    console.log("process_hit", hit_info)
+
+    hits_received[makeid()] = hit_info;
 }
 
 function receive_fake_hit() {
@@ -52,7 +55,7 @@ function receive_fake_hit() {
 }
 
 function send_fake_shot() {
-
+    console.log("todo send_fake_shot")
 }
 
 function cleanup_navbar() {
