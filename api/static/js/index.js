@@ -129,10 +129,9 @@ function poll_match() {
                 $(".waiting_for_match_num_players").text(data.data.number_of_players);
                 var poll_match_delay = 3000;
 
-                if (data.data.received_hit_ids) {
-                    console.log("data.data.received_hit_ids", data.data.received_hit_ids);
-                    for (var i=0; i<data.data.received_hit_ids.length; i++) {
-                        delete hits_received[data.data.received_hit_ids[i]];
+                if (data.received_hit_ids) {
+                    for (var i=0; i<data.received_hit_ids.length; i++) {
+                        delete hits_received[data.received_hit_ids[i]];
                     }
                 }
 

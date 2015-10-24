@@ -92,7 +92,7 @@ def get_match_details(request):
     p.save()
     
     received_hit_ids = []
-    if 'hits_received' in request.POST:
+    if 'hits_received' in request.POST and r.match_id:
         previously_received_hits = {}
         for h in Hit.objects.filter(room_code=r.room_code, match_id=r.match_id, to_player_id=p.player_id).values('client_hit_id'):
             previously_received_hits[h['client_hit_id']] = 1
@@ -190,6 +190,7 @@ def end_match(request):
         Match.objects.filter(id=r.match_id).update(match_in_progress=False)
         r.match_id = None
         r.save()
+    Player.objects.filter(room_code=r.room_code, player_id=p.player_id).update(score=0)
 
     return HttpResponse(json.dumps({
         "status": "success",
