@@ -35,14 +35,47 @@ function leave_room() {
 }
 
 function end_match() {
+    if (confirm("Are you sure? This will reset all scores.")) {
+        jQuery.ajax({
+            url: "http://127.0.0.1:8000/end_match",
+            dataType: "json",
+            type: "POST",
+            data: {
+                player_id: localStorage.getItem("player_id"),
+                room_code: localStorage.getItem("room_code"),
+            },
+            error: function (e) {
+                console.log("error", e);
+                alert("Error while trying to end match!");
+            },
+            success:function (data) {
+                $(".receive_fake_hit_action").addClass('hide-me');
+                $(".send_fake_shot_action").addClass('hide-me');
+                $(".end_match_action").addClass('hide-me');
+                cleanup_navbar();
 
+                $(".full_page").addClass('hide-me');
+                $("#waiting_for_match_to_start").removeClass('hide-me');
+
+                if (data.creator_player_id == localStorage.getItem("player_id")) {
+                    $("#waiting_for_match_to_start_nonadmin").addClass('hide-me');
+                    $("#waiting_for_match_to_start_admin").removeClass('hide-me');
+                }
+                else {
+                    $("#waiting_for_match_to_start_nonadmin").removeClass('hide-me');
+                    $("#waiting_for_match_to_start_admin").addClass('hide-me');
+                }
+                poll_match();
+            }
+        });
+    }
 }
 
-function process_hit() {
+function process_hit(player_id, shot_location) {
     var hit_info = {
-        "player_id": other_players_in_room[Math.floor(Math.random() * other_players_in_room.length)],
+        "player_id": player_id,
         "time": Math.floor(new Date().getTime()/1000),
-        "shot_location": shot_locations[Math.floor(Math.random() * shot_locations.length)]
+        "shot_location": shot_location
     };
     console.log("process_hit", hit_info)
 
@@ -50,7 +83,9 @@ function process_hit() {
 }
 
 function receive_fake_hit() {
-    process_hit();
+    var player_id = other_players_in_room[Math.floor(Math.random() * other_players_in_room.length)];
+    var shot_location = shot_locations[Math.floor(Math.random() * shot_locations.length)];
+    process_hit(player_id, shot_location);
     $("#mainnavbar_button").click();
 }
 

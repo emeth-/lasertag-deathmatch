@@ -127,8 +127,8 @@ def get_match_details(request):
     }
 
     try:
-        m = Match.objects.get(room_code=r.room_code)
-        match_details['match_in_progress'] = m.match_started
+        m = Match.objects.get(id=r.match_id)
+        match_details['match_in_progress'] = m.match_in_progress
         match_details['match_countdown'] = m.match_countdown
         match_details['match_seconds_elapsed'] = int((datetime.datetime.now()-m.match_start).total_seconds())
         match_details['match_seconds_left'] = m.match_length*60 - match_details['match_seconds_elapsed']
@@ -169,7 +169,7 @@ def start_match(request):
         "match_countdown": request.POST['match_countdown'],
         "match_length": request.POST['match_length'],
         "match_start": datetime.datetime.now(),
-        "match_started": True
+        "match_in_progress": True
     })
     new_match.save()
 
@@ -187,11 +187,13 @@ def end_match(request):
     r = Room.objects.get(room_code=request.POST['room_code'])
     p = Player.objects.get(room_code=request.POST['room_code'], player_id=request.POST['player_id'])
     if r.creator_player_id == p.player_id:
-        r.match_started = False
+        Match.objects.filter(id=r.match_id).update(match_in_progress=False)
+        r.match_id = None
         r.save()
 
     return HttpResponse(json.dumps({
-        "status": "success"
+        "status": "success",
+        "creator_player_id": r.creator_player_id
     }, default=json_custom_parser), content_type='application/json', status=200)
 
 def email_me_game_results(request):

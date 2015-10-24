@@ -19,7 +19,7 @@ class Room(models.Model):
 class Match(models.Model):
     room_code = models.CharField(max_length=255, default='')
     creator_player_id = models.CharField(max_length=255, default='')
-    match_started = models.BooleanField(default=False)
+    match_in_progress = models.BooleanField(default=False)
 
     match_start = models.DateTimeField(blank=True, null=True)
     match_countdown = models.IntegerField(default=10, blank=True, null=True) #countdown in seconds to start of match
