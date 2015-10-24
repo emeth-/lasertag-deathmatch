@@ -20,18 +20,20 @@ function reset_room() {
 reset_room();
 
 function leave_room() {
-    clearTimeout(poll_match_settimeout);
-    $("#mainnavbar_button").click();
-    reset_room();
+    if (confirm("Are you sure you want to leave the room?")) {
+        clearTimeout(poll_match_settimeout);
+        $("#mainnavbar_button").click();
+        reset_room();
 
-    $(".leave_room_action").addClass('hide-me');
-    $(".receive_fake_hit_action").addClass('hide-me');
-    $(".send_fake_shot_action").addClass('hide-me');
-    $(".end_match_action").addClass('hide-me');
-    cleanup_navbar();
+        $(".leave_room_action").addClass('hide-me');
+        $(".receive_fake_hit_action").addClass('hide-me');
+        $(".send_fake_shot_action").addClass('hide-me');
+        $(".end_match_action").addClass('hide-me');
+        cleanup_navbar();
 
-    $(".full_page").addClass('hide-me');
-    $("#create_or_join_room_div").removeClass('hide-me');
+        $(".full_page").addClass('hide-me');
+        $("#create_or_join_room_div").removeClass('hide-me');
+    }
 }
 
 function end_match() {
