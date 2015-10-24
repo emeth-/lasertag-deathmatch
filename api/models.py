@@ -19,13 +19,6 @@ class Room(models.Model):
 class Match(models.Model):
     room_code = models.CharField(max_length=255, default='')
     creator_player_id = models.CharField(max_length=255, default='')
-    gametype_CHOICES = (
-        ('deathmatch', 'Deathmatch'),
-        ('team_deathmatch', 'Team Deathmatch'),
-    )
-    lives_per_spawn = models.IntegerField(default=1, blank=True, null=True) #number of lives before player hits respawn timer
-    respawn_timer = models.IntegerField(default=5, blank=True, null=True) #-1 for no respawns, otherwise is # of seconds
-    gametype = models.CharField(max_length=255, choices=gametype_CHOICES, default="deathmatch")
     match_started = models.BooleanField(default=False)
 
     match_start = models.DateTimeField(blank=True, null=True)

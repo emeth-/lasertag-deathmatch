@@ -8,7 +8,7 @@ admin.site.register(Room, RoomAdmin)
 
 from api.models import Match
 class MatchAdmin(admin.ModelAdmin):
-    list_display = ('room_code', 'gametype', 'match_started')
+    list_display = ('room_code', 'match_started')
     search_fields = ('room_code',)
 admin.site.register(Match, MatchAdmin)
 

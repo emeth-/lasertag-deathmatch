@@ -12,7 +12,6 @@ def create_room(request):
     request.POST = {
         "player_id": "<>",
         "room_code": "<>",
-        "gametype": "<>",
         "locked_down": False
     }
     """
@@ -130,9 +129,6 @@ def get_match_details(request):
     try:
         m = Match.objects.get(room_code=r.room_code)
         match_details['match_in_progress'] = m.match_started
-        match_details['lives_per_spawn'] = m.lives_per_spawn
-        match_details['respawn_timer'] = m.respawn_timer
-        match_details['gametype'] = m.gametype
         match_details['match_countdown'] = m.match_countdown
         match_details['match_seconds_elapsed'] = int((datetime.datetime.now()-m.match_start).total_seconds())
         match_details['match_seconds_left'] = m.match_length*60 - match_details['match_seconds_elapsed']
@@ -170,9 +166,6 @@ def start_match(request):
     new_match = Match(**{
         "room_code": r.room_code,
         "creator_player_id": r.creator_player_id,
-        "gametype": request.POST['gametype'],
-        "lives_per_spawn": request.POST['lives_per_spawn'],
-        "respawn_timer": request.POST['respawn_timer'],
         "match_countdown": request.POST['match_countdown'],
         "match_length": request.POST['match_length'],
         "match_start": datetime.datetime.now(),

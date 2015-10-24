@@ -8,8 +8,6 @@ var hits_received;
 var other_players_in_room;
 var player_lives;
 var match_lives;
-var match_respawn_timer;
-var player_respawn_timer;
 
 function reset_room() {
     localStorage.removeItem("room_id");
@@ -17,8 +15,6 @@ function reset_room() {
     player_lives = -1;
     hits_received = {};
     match_lives = 0;
-    match_respawn_timer = 0;
-    player_respawn_timer = -1;
 }
 
 reset_room();
@@ -48,38 +44,6 @@ function process_hit() {
         "time": Math.floor(new Date().getTime()/1000),
         "shot_location": shot_locations[Math.floor(Math.random() * shot_locations.length)]
     };
-    if (player_lives > 0) {
-        player_lives = player_lives - 1;
-        $("#player_lives").text(player_lives);
-    }
-    if (player_lives == 0) {
-        $("#player_status").html("DEAD");
-    }
-    if (match_respawn_timer > 0 && player_lives == 0) {
-        trigger_player_respawn_timer();
-    }
-}
-
-function trigger_player_respawn_timer() {
-    if (match_respawn_timer > 0 && player_lives == 0) {
-        if (player_respawn_timer == -1) {
-            //haven't started respawn yet
-            player_respawn_timer = match_respawn_timer;
-            $("#player_status").html("DEAD <br>"+player_respawn_timer+" seconds");
-            setTimeout("trigger_player_respawn_timer()", 1000);
-        } else if (player_respawn_timer <= 1) { //1 or 0
-            //respawn player
-            player_lives = match_lives;
-            $("#player_lives").text(player_lives);
-            player_respawn_timer = -1;
-            $("#player_status").html("Alive<br>&nbsp;");
-        } else {
-            //respawn ticking down
-            player_respawn_timer = player_respawn_timer - 1;
-            $("#player_status").html("DEAD <br>"+player_respawn_timer+" seconds");
-            setTimeout("trigger_player_respawn_timer()", 1000);
-        }
-    }
 }
 
 function receive_fake_hit() {
@@ -106,7 +70,7 @@ function poll_match() {
     clearTimeout(poll_match_settimeout);
     if (localStorage.getItem("room_code")) {
         jQuery.ajax({
-            url: "http://127.0.0.1:8001/get_match_details",
+            url: "http://127.0.0.1:8000/get_match_details",
             dataType: "json",
             type: "POST",
             data: {
@@ -148,24 +112,10 @@ function poll_match() {
                     cleanup_navbar();
                     //End navbar updates
 
-                    if (player_lives == -1) {
-                        //beginning of match, set player to default lives
-                        player_lives = parseInt(data.data.lives_per_spawn);
-                        $("#player_lives").text(player_lives);
-                    }
-
-                    $(".match_in_progress_gametype").text(data.data.gametype);
-                    $(".match_rules_lives_per_spawn").text(data.data.lives_per_spawn);
                     $(".match_rules_length").text(data.data.match_length + " minutes");
 
                     match_lives = data.data.lives_per_spawn;
 
-                    match_respawn_timer = data.data.respawn_timer;
-                    var respawn_timer_text = data.data.respawn_timer + " seconds";
-                    if (data.data.respawn_timer == -1) {
-                        respawn_timer_text = "disabled";
-                    }
-                    $(".match_rules_respawn_timer").text(respawn_timer_text);
                     var scores_htmlz = "";
                     var players_ids = [];
                     for (var i=0; i<data.data.players.length; i++) {
@@ -230,29 +180,17 @@ function start_match() {
     var post_data = {
         player_id: localStorage.getItem("player_id"),
         room_code: localStorage.getItem("room_code"),
-        gametype: jQuery("#match_config_gametype").val(),
-        lives_per_spawn: jQuery("#match_config_lives_per_spawn").val(),
         match_countdown: jQuery("#match_config_countdown").val(),
         match_length: jQuery("#match_config_length").val(),
-        respawn_timer: -1,
     };
-    if ($('#match_config_respawn_enabled').prop('checked')) {
-        post_data['respawn_timer'] = jQuery("#match_config_respawn_timer").val();
-    }
-    if (!parseInt(post_data['lives_per_spawn'])) {
-        post_data['lives_per_spawn'] = 1;
-    }
     if (!parseInt(post_data['match_countdown'])) {
         post_data['match_countdown'] = 10;
     }
     if (!parseInt(post_data['match_length'])) {
         post_data['match_length'] = 15;
     }
-    if (!parseInt(post_data['respawn_timer'])) {
-        post_data['respawn_timer'] = 5;
-    }
     jQuery.ajax({
-        url: "http://127.0.0.1:8001/start_match",
+        url: "http://127.0.0.1:8000/start_match",
         dataType: "json",
         type: "POST",
         data: post_data,
@@ -273,13 +211,12 @@ function create_room_submit() {
     else {
         $(".full_page").addClass('hide-me');
         jQuery.ajax({
-            url: "http://127.0.0.1:8001/create_room",
+            url: "http://127.0.0.1:8000/create_room",
             dataType: "json",
             type: "POST",
             data: {
                 player_id: localStorage.getItem("player_id"),
                 room_code: jQuery("#create_room_room_code").val(),
-                gametype: jQuery("#create_room_gametype").val(),
                 locked_down: jQuery("#create_room_locked_down").val(),
             },
             error: function (e) {
@@ -318,7 +255,7 @@ function join_existing_room_submit() {
     else {
         $(".full_page").addClass('hide-me');
         jQuery.ajax({
-            url: "http://127.0.0.1:8001/add_player_to_room", // https://sage-lasertag-api.herokuapp.com
+            url: "http://127.0.0.1:8000/add_player_to_room", // https://sage-lasertag-api.herokuapp.com
             dataType: "json",
             type: "POST",
             data: {
