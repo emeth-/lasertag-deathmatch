@@ -126,6 +126,7 @@ function poll_match() {
                         if (data.data.players[i]['player_id'] == localStorage.getItem("player_id")) {
                             $("#player_score").text(data.data.players[i]['score']);
                             scores_htmlz += '<tr bgcolor="#add8e6">';
+                            $(".current_player_name").html(data.data.players[i]['alias']);
                         }
                         else {
                             scores_htmlz += '<tr>';
