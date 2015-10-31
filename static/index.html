@@ -42,9 +42,11 @@
             text-align: center !important; 
          }
         body {
-            background: url('laser_background.jpg');
-            background-repeat: no-repeat;
-            background-size: 100% 100%;
+            background: url('laser_background.jpg') no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size:cover;
         }
         </style>
         <title>Laser Tag</title>
@@ -95,7 +97,7 @@
 
             </div--><!-- end pair_bluetooth_gun -->
             
-            <div id="create_or_join_room_div" class="full_page">
+            <div id="create_or_join_room_div" class="full_page hide-me">
 
 
              <center>  <div class="panel panel-default" style="width:203px">
@@ -113,9 +115,9 @@
 
             </div><!-- end create_or_join_room_div -->
 
-            <div id="waiting_for_match_to_start" class="full_page hide-me">
+            <div id="waiting_for_match_to_start" class="full_page">
 
-                <div class="panel panel-default" id="waiting_for_match_to_start_admin">
+                <div class="panel panel-default" id="waiting_for_match_to_start_admin" style="display:none;">
                   <div class="panel-heading">
                     <h3 class="panel-title">Configure Deathmatch</h3>
                   </div>
