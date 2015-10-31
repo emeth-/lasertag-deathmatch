@@ -39,7 +39,7 @@ function leave_room() {
 function end_match() {
     if (confirm("Are you sure? This will reset all scores.")) {
         jQuery.ajax({
-            url: "http://127.0.0.1:8000/end_match",
+            url: "end_match",
             dataType: "json",
             type: "POST",
             data: {
@@ -110,7 +110,7 @@ function poll_match() {
     clearTimeout(poll_match_settimeout);
     if (localStorage.getItem("room_code")) {
         jQuery.ajax({
-            url: "http://127.0.0.1:8000/get_match_details",
+            url: "get_match_details",
             dataType: "json",
             type: "POST",
             data: {
@@ -230,7 +230,7 @@ function start_match() {
         post_data['match_length'] = 15;
     }
     jQuery.ajax({
-        url: "http://127.0.0.1:8000/start_match",
+        url: "start_match",
         dataType: "json",
         type: "POST",
         data: post_data,
@@ -251,7 +251,7 @@ function create_room_submit() {
     else {
         $(".full_page").addClass('hide-me');
         jQuery.ajax({
-            url: "http://127.0.0.1:8000/create_room",
+            url: "create_room",
             dataType: "json",
             type: "POST",
             data: {
@@ -295,7 +295,7 @@ function join_existing_room_submit() {
     else {
         $(".full_page").addClass('hide-me');
         jQuery.ajax({
-            url: "http://127.0.0.1:8000/add_player_to_room", // https://sage-lasertag-api.herokuapp.com
+            url: "add_player_to_room", // https://sage-lasertag-api.herokuapp.com
             dataType: "json",
             type: "POST",
             data: {
