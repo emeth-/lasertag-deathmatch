@@ -97,7 +97,7 @@
 
             </div--><!-- end pair_bluetooth_gun -->
             
-            <div id="create_or_join_room_div" class="full_page hide-me">
+            <div id="create_or_join_room_div" class="full_page">
 
 
              <center>  <div class="panel panel-default" style="width:203px">
@@ -115,9 +115,9 @@
 
             </div><!-- end create_or_join_room_div -->
 
-            <div id="waiting_for_match_to_start" class="full_page">
+            <div id="waiting_for_match_to_start" class="full_page hide-me">
 
-                <div class="panel panel-default" id="waiting_for_match_to_start_admin" style="display:none;">
+                <div class="panel panel-default" id="waiting_for_match_to_start_nonadmin" style="display:none;">
                   <div class="panel-heading">
                     <h3 class="panel-title">Configure Deathmatch</h3>
                   </div>
@@ -139,15 +139,41 @@
                 </div>
 
 
-                <div class="panel panel-default" id="waiting_for_match_to_start_nonadmin">
+                <div class="panel panel-default navbar-left" id="waiting_for_match_to_start_admin">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Waiting for Match to Start</h3>
+                        <h3 class="panel-title">Deathmatch Pregame</h3>
                     </div>
-                    <div class="panel-body">
-                        Total Players In Room: <span class="waiting_for_match_num_players">1</span><br><br>
+                    <div class="panel-body ">
+                        <table width='100%'>
+                            <tr>
+                                <td width=50% valign='top'>
+                                  
+                                     Players 3 Total:<br>
+                                   <ol>
+                                     <li> Bob</li>
+                                     <li> Joe</li>
+                                     <li>Timmy</li>
+                                     </ol>
+                                
+                                </td width=50%>
+                                <td>
+                                    <center><u>Rules</u></center><br>
+                                    <ol>
+                                        <li>Every man for himself</li>
+                                        <li>Most points at the end of the round wins</li>
+                                        <li>Chest hit= 5 points</li>
+                                        <li>Shoulder hit= 10 points</li>
+                                        <li>Back hit= 15 points</li> 
+                                    </ol>
+                                </td>
+                            </tr>
+                        </table>
                         <!--#TODO Allow team selection here.-->
                     </div>
                 </div>
+                        
+                        
+                        
             </div><!-- end waiting_for_match_to_start -->
 
 
