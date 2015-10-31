@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 import datetime
 import json
 from api.models import Room, Player, Hit, Match
@@ -7,65 +7,78 @@ from django.db.models import F
 
 animal_names = ['Alligator', 'Antelope', 'Armadillo', 'Badger', 'Bat', 'Bear', 'Beaver', 'Bee', 'Bison', 'Butterfly', 'Camel', 'Cat', 'Coyote', 'Crow', 'Deer', 'Dinosaur', 'Dog', 'Dolphin', 'Donkey', 'Duck', 'Eagle', 'Eel', 'Elephant', 'Elk', 'Ferret', 'Fish', 'Fox', 'Frog', 'Giraffe', 'Goat', 'Goose', 'Gorilla', 'Hawk', 'Horse', 'Hyena', 'Jellyfish', 'Kangaroo', 'Koala', 'Leopard', 'Lion', 'Llama', 'Monkey', 'Nightingale', 'Owl', 'Otter', 'Ostrich', 'Ox', 'Panda', 'Parrot', 'Quail', 'Rabbit', 'Raccoon', 'Rhino', 'Seal', 'Shark', 'Sheep', 'Squirrel', 'Tiger', 'Turkey', 'Turtle', 'Walrus', 'Wolf', 'Zebra']
 
-def create_room(request):
+def get_random_id():
+    return ''.join(random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') for _ in range(10))
+
+def homepage(request):
+    return HttpResponseRedirect('/static/index.html')
+
+def create_or_join_room(request):
     """
     request.POST = {
-        "player_id": "<>",
         "room_code": "<>",
-        "locked_down": False
+        "player_name": "<>"
     }
     """
+    if 'player_id' not in request.session:
+        request.session['player_id'] = get_random_id()
+
+    player_name = request.POST['player_name']
+    if not player_name:
+        player_name = random.choice(animal_names)
+
     if Room.objects.filter(room_code=request.POST['room_code']).exists():
-        return HttpResponse(json.dumps({
-            "status": "error",
-            "message": "Room already exists with that code."
-        }, default=json_custom_parser), content_type='application/json', status=400)
 
-    Room.objects.filter(creator_player_id=request.POST['player_id']).delete()
-    new_room = Room(**{
-        "room_code": request.POST['room_code'],
-        "creator_player_id": request.POST['player_id'],
-    })
-    new_room.save()
+        try:
+            r = Room.objects.get(room_code=request.POST['room_code'])
+        except Room.DoesNotExist:
+            return HttpResponse(json.dumps({
+                "status": "error",
+                "message": "Room does not exist."
+            }, default=json_custom_parser), content_type='application/json', status=400)
 
-    new_player = Player(**{
-        "room_code": request.POST['room_code'],
-        "player_id": request.POST['player_id'],
-        "alias": random.choice(animal_names)
-    })
-    new_player.save()
-
-    return HttpResponse(json.dumps({
-        "status": "success",
-        "data": {
-            "room_code": new_room.room_code,
-            "creator_player_id": new_room.creator_player_id,
-        }
-    }, default=json_custom_parser), content_type='application/json', status=200)
-
-def add_player_to_room(request):
-
-    try:
-        r = Room.objects.get(room_code=request.POST['room_code'])
-    except Room.DoesNotExist:
-        return HttpResponse(json.dumps({
-            "status": "error",
-            "message": "Room does not exist."
-        }, default=json_custom_parser), content_type='application/json', status=400)
-    
-    new_player = Player(**{
-        "room_code": r.room_code,
-        "player_id": request.POST['player_id'],
-        "alias": random.choice(animal_names)
-    })
-    new_player.save()
-    return HttpResponse(json.dumps({
-        "status": "success",
-        "data": {
+        new_player = Player(**{
             "room_code": r.room_code,
-            "creator_player_id": r.creator_player_id,
-        }
-    }, default=json_custom_parser), content_type='application/json', status=200)
+            "player_id": request.session['player_id'],
+            "alias": player_name
+        })
+        new_player.save()
+        return HttpResponse(json.dumps({
+            "status": "success",
+            "data": {
+                "room_code": r.room_code,
+                "player_name": player_name,
+                "player_id": request.session['player_id'],
+                "creator_player_id": r.creator_player_id,
+            }
+        }, default=json_custom_parser), content_type='application/json', status=200)
+
+    else:
+
+        Room.objects.filter(creator_player_id=request.session['player_id']).delete()
+        new_room = Room(**{
+            "room_code": request.POST['room_code'],
+            "creator_player_id": request.session['player_id'],
+        })
+        new_room.save()
+
+        new_player = Player(**{
+            "room_code": request.POST['room_code'],
+            "player_id": request.session['player_id'],
+            "alias": player_name
+        })
+        new_player.save()
+
+        return HttpResponse(json.dumps({
+            "status": "success",
+            "data": {
+                "room_code": new_room.room_code,
+                "player_name": player_name,
+                "player_id": request.session['player_id'],
+                "creator_player_id": new_room.creator_player_id,
+            }
+        }, default=json_custom_parser), content_type='application/json', status=200)
+
 
 def get_match_details(request):
     """
@@ -73,7 +86,6 @@ def get_match_details(request):
         Also receives (as a json array) info on all hits/shots taken by the user
         request.POST = {
             "room_code": "<>",
-            "player_id": "<>",
             "shots_taken": <number>,
             "hits_received": {
                     <hit_id>: {
@@ -87,7 +99,7 @@ def get_match_details(request):
         }
     """
     r = Room.objects.get(room_code=request.POST['room_code'])
-    p = Player.objects.get(room_code=request.POST['room_code'], player_id=request.POST['player_id'])
+    p = Player.objects.get(room_code=request.POST['room_code'], player_id=request.session['player_id'])
     p.last_ping = datetime.datetime.now()
     p.save()
     
@@ -157,7 +169,7 @@ def start_match(request):
         Admin manually triggers match start.
     """
     r = Room.objects.get(room_code=request.POST['room_code'])
-    p = Player.objects.get(room_code=request.POST['room_code'], player_id=request.POST['player_id'])
+    p = Player.objects.get(room_code=request.POST['room_code'], player_id=request.session['player_id'])
     if r.creator_player_id != p.player_id:
         return HttpResponse(json.dumps({
             "status": "error",
@@ -186,7 +198,7 @@ def end_match(request):
         Admin manually triggers match end.
     """
     r = Room.objects.get(room_code=request.POST['room_code'])
-    p = Player.objects.get(room_code=request.POST['room_code'], player_id=request.POST['player_id'])
+    p = Player.objects.get(room_code=request.POST['room_code'], player_id=request.session['player_id'])
     if r.creator_player_id == p.player_id:
         Match.objects.filter(id=r.match_id).update(match_in_progress=False)
         r.match_id = None

@@ -106,10 +106,10 @@
                     <h1 class="panel-title" style="font-size:35px">Laser Tag</h1>
                   </div>
                   <div class="panel-body">
-                    <input type="text" id="create_room_room_code" class="form-control" placeholder="Game Pin " style="width: 145px; height:38px"><br>
+                    <input type="text" id="game_pin" class="form-control" placeholder="Game Pin " style="width: 145px; height:38px"><br>
 
-                    <input type="text" id="create_room_room_code" class="form-control" placeholder="Name" style="width: 145px; height:38px"><br>
-                    <button onclick="create_room_submit()" type="button" class="btn btn-lg btn-success">Enter</button>
+                    <input type="text" id="player_name" class="form-control" placeholder="Name" style="width: 145px; height:38px"><br>
+                    <button onclick="create_or_join_room_submit()" type="button" class="btn btn-lg btn-success">Enter</button>
                   </div>
                 </div>
              </center>
@@ -149,12 +149,12 @@
                             <tr>
                                 <td width=50% valign='top'>
                                   
-                                     Players 3 Total:<br>
-                                   <ol>
-                                     <li> Bob</li>
-                                     <li> Joe</li>
-                                     <li>Timmy</li>
-                                     </ol>
+                                    <u>Players</u> (<span class='number_of_players'>3</span> Total)<br>
+                                    <ol id='match_waiting_to_start'>
+                                        <li>Bob</li>
+                                        <li>Joe</li>
+                                        <li>Timmy</li>
+                                    </ol>
                                 
                                 </td width=50%>
                                 <td>
@@ -162,9 +162,9 @@
                                     <ol>
                                         <li>Every man for himself</li>
                                         <li>Most points at the end of the round wins</li>
-                                        <li>Chest hit= 5 points</li>
-                                        <li>Shoulder hit= 10 points</li>
-                                        <li>Back hit= 15 points</li> 
+                                        <li>Chest hit = 5 points</li>
+                                        <li>Shoulder hit = 10 points</li>
+                                        <li>Back hit = 15 points</li>
                                     </ol>
                                 </td>
                             </tr>

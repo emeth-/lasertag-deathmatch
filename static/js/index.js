@@ -1,7 +1,3 @@
-if (!localStorage.getItem("player_id")){
-    // TODO actually transfer this to server-side
-    localStorage.setItem("player_id", makeid());
-}
 var poll_match_settimeout;
 var shot_locations = ["chest", "shoulder", "back"];
 var hits_received;
@@ -43,7 +39,6 @@ function end_match() {
             dataType: "json",
             type: "POST",
             data: {
-                player_id: localStorage.getItem("player_id"),
                 room_code: localStorage.getItem("room_code"),
             },
             error: function (e) {
@@ -114,7 +109,6 @@ function poll_match() {
             dataType: "json",
             type: "POST",
             data: {
-                player_id: localStorage.getItem("player_id"),
                 room_code: localStorage.getItem("room_code"),
                 hits_received: JSON.stringify(hits_received)
             },
@@ -205,6 +199,25 @@ function poll_match() {
                     $(".send_fake_shot_action").addClass('hide-me');
                     cleanup_navbar();
                     //End navbar updates
+
+                    //match not in progress
+
+                    var players_ids = [];
+                    var scores_htmlz = "";
+                    for (var i=0; i<data.data.players.length; i++) {
+                        players_ids.push(data.data.players[i]['player_id']);
+                        if (data.data.players[i]['player_id'] == localStorage.getItem("player_id")) {
+                            $("#player_score").text(data.data.players[i]['score']);
+                            scores_htmlz += '<li bgcolor="#add8e6">';
+                        }
+                        else {
+                            scores_htmlz += '<li>';
+                        }
+                        scores_htmlz += data.data.players[i]['alias']+'</li>';
+                    }
+                    $("#match_waiting_to_start").html(scores_htmlz);
+                    $(".number_of_players").html(data.data.players.length);
+
                 }
 
                 if (localStorage.getItem("room_code")) {
@@ -218,7 +231,6 @@ function poll_match() {
 
 function start_match() {
     var post_data = {
-        player_id: localStorage.getItem("player_id"),
         room_code: localStorage.getItem("room_code"),
         match_countdown: jQuery("#match_config_countdown").val(),
         match_length: jQuery("#match_config_length").val(),
@@ -244,20 +256,19 @@ function start_match() {
     });
 }
 
-function create_room_submit() {
-    if (!jQuery("#create_room_room_code").val()) {
-        alert("Must enter room code!");
+function create_or_join_room_submit() {
+    if (!jQuery("#game_pin").val()) {
+        alert("Must enter game pin!");
     }
     else {
         $(".full_page").addClass('hide-me');
         jQuery.ajax({
-            url: "/create_room",
+            url: "/create_or_join_room",
             dataType: "json",
             type: "POST",
             data: {
-                player_id: localStorage.getItem("player_id"),
-                room_code: jQuery("#create_room_room_code").val(),
-                locked_down: jQuery("#create_room_locked_down").val(),
+                room_code: jQuery("#game_pin").val(),
+                player_name: jQuery("#player_name").val()
             },
             error: function (e) {
                 if (e.responseJSON && e.responseJSON.message) {
@@ -272,50 +283,10 @@ function create_room_submit() {
             success:function (data) {
                 $(".leave_room_action").removeClass('hide-me');
                 cleanup_navbar();
+                localStorage.setItem("player_name", data.data.player_name);
                 localStorage.setItem("room_code", data.data.room_code);
-                $("#waiting_for_match_to_start").removeClass('hide-me');
-                if (data.data.creator_player_id == localStorage.getItem("player_id")) {
-                    $("#waiting_for_match_to_start_nonadmin").addClass('hide-me');
-                    $("#waiting_for_match_to_start_admin").removeClass('hide-me');
-                }
-                else {
-                    $("#waiting_for_match_to_start_nonadmin").removeClass('hide-me');
-                    $("#waiting_for_match_to_start_admin").addClass('hide-me');
-                }
-                poll_match();
-            }
-        });
-    }
-}
+                localStorage.setItem("player_id", data.data.player_id);
 
-function join_existing_room_submit() {
-    if (!jQuery("#join_room_room_code").val()) {
-        alert("Must enter room code!");
-    }
-    else {
-        $(".full_page").addClass('hide-me');
-        jQuery.ajax({
-            url: "/add_player_to_room", // https://sage-lasertag-api.herokuapp.com
-            dataType: "json",
-            type: "POST",
-            data: {
-                player_id: localStorage.getItem("player_id"),
-                room_code: jQuery("#join_room_room_code").val(),
-            },
-            error: function (e) {
-                if (e.responseJSON && e.responseJSON.message) {
-                    alert(e.responseJSON.message);
-                }
-                else {
-                    console.log("error", e);
-                    alert("Error while trying to join existing room");
-                }
-                $("#create_or_join_room_div").removeClass('hide-me');
-            },
-            success:function (data) {
-                $(".leave_room_action").removeClass('hide-me');
-                cleanup_navbar();
-                localStorage.setItem("room_code", data.data.room_code);
                 $("#waiting_for_match_to_start").removeClass('hide-me');
                 if (data.data.creator_player_id == localStorage.getItem("player_id")) {
                     $("#waiting_for_match_to_start_nonadmin").addClass('hide-me');
