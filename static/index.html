@@ -25,15 +25,36 @@
         {
             margin:0;
         }
+        
+        ::-webkit-input-placeholder {
+            text-align: center !important;
+         }
+         
+         :-moz-placeholder { /* Firefox 18- */
+            text-align: center !important;  
+         }
+         
+         ::-moz-placeholder {  /* Firefox 19+ */
+            text-align: center !important;  
+         }
+         
+         :-ms-input-placeholder {  
+            text-align: center !important; 
+         }
+        body {
+            background: url('laser_background.jpg');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
         </style>
-        <title>Sage Laser Tag</title>
+        <title>Laser Tag</title>
         <script type="text/javascript" src="js/jquery-1.11.3.js"></script>
         <script src="js/bootstrap.js"></script>
         <script src="js/bootstrap-toggle.min.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
     </head>
     <body>
-        <nav class="navbar navbar-inverse navbar-fixed-top">
+        <!--nav class="navbar navbar-inverse navbar-fixed-top">
           <div class="container">
             <div class="navbar-header">
               <button type="button" class="navbar-toggle collapsed hide-me" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" id="mainnavbar_button">
@@ -42,7 +63,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="#">Sage Laser Tag</a>
+              <a class="navbar-brand" href="#">Laser Tag</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse hide-me">
               <ul class="nav navbar-nav">
@@ -51,9 +72,9 @@
                 <li class="receive_fake_hit_action hide-me"><a href="#" onclick="receive_fake_hit()">Receive Fake Hit</a></li>
                 <li class="send_fake_shot_action hide-me"><a href="#" onclick="send_fake_shot()">Send Fake Shot</a></li>
               </ul>
-            </div><!--/.nav-collapse -->
+            </div>
           </div>
-        </nav>
+        </nav-->
 
         <div class="container theme-showcase" role="main" style="margin-bottom: 74px; margin-top: 60px;">
 
@@ -76,28 +97,18 @@
             
             <div id="create_or_join_room_div" class="full_page">
 
-                <div class="panel panel-default">
+
+             <center>  <div class="panel panel-default" style="width:203px">
                   <div class="panel-heading">
-                    <h3 class="panel-title">Join Existing Room</h3>
+                    <h1 class="panel-title" style="font-size:35px">Laser Tag</h1>
                   </div>
                   <div class="panel-body">
-                    <input type="text" id="join_room_room_code" class="form-control" placeholder="Room Code"><br>
-                    <button onclick="join_existing_room_submit()" type="button" class="btn btn-lg btn-success">Join</button>
+                    <input type="text" id="create_room_room_code" class="form-control" placeholder="Game Pin " style="width: 145px; height:38px"><br>
+
+                    <button onclick="create_room_submit()" type="button" class="btn btn-lg btn-success">Enter</button>
                   </div>
                 </div>
-
-
-                <div class="panel panel-default">
-                  <div class="panel-heading">
-                    <h3 class="panel-title">Create A New Room</h3>
-                  </div>
-                  <div class="panel-body">
-                    <input type="text" id="create_room_room_code" class="form-control" placeholder="Room Code"><br>
-
-                    <button onclick="create_room_submit()" type="button" class="btn btn-lg btn-success">Create</button>
-                  </div>
-                </div>
-
+             </center>
 
             </div><!-- end create_or_join_room_div -->
 
