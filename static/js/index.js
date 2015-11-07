@@ -161,6 +161,7 @@ function poll_match() {
                     for (var i=0; i<data.data.players.length; i++) {
                         if (data.data.players[i]['player_id'] == localStorage.getItem("player_id")) {
                             $("#player_score").text(data.data.players[i]['score']);
+                            $("#player_place").text(ordinal_suffix_of(i+1));
                             scores_htmlz += '<tr bgcolor="#add8e6">';
                             $(".current_player_name").html(data.data.players[i]['alias']);
                         }
@@ -210,12 +211,13 @@ function poll_match() {
 
                     var players_ids = [];
                     var place = 1;
+                    var score_before_you = -1;
                     var scores_htmlz = "";
                     for (var i=0; i<data.data.players.length; i++) {
                         players_ids.push(data.data.players[i]['player_id']);
                         if (data.data.players[i]['player_id'] == localStorage.getItem("player_id")) {
-                            $("#player_place").text(ordinal_suffix_of(i+1));
                             $("#player_score").text(data.data.players[i]['score']);
+                            $("#player_place").text(ordinal_suffix_of(i+1));
                             scores_htmlz += '<li bgcolor="#add8e6">';
                         }
                         else {
