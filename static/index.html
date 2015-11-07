@@ -118,33 +118,16 @@
 
             <div id="waiting_for_match_to_start" class="full_page hide-me">
 
-                <div class="panel panel-default" id="waiting_for_match_to_start_nonadmin" style="display:none;">
-                  <div class="panel-heading">
-                    <h3 class="panel-title">Configure Deathmatch</h3>
-                  </div>
-                  <div class="panel-body">
-
-                    <div class="form-group">
-                        <label for="match_config_length" class="control-label">Match Length (minutes)</label>
-                        <input type="text" id="match_config_length" class="form-control" placeholder="15">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="match_config_countdown" class="control-label">Match Countdown (seconds)</label>
-                        <input type="text" id="match_config_countdown" class="form-control" placeholder="10">
-                    </div>
-
-                    <span style="font-weight: bold">Total Players In Room:</span> <span class="waiting_for_match_num_players">1</span><br><br>
-                    <button onclick="start_match()" type="button" class="btn btn-lg btn-success">Start Match!</button>
-                  </div>
-                </div>
-
-
-                <div class="panel panel-default navbar-left" id="waiting_for_match_to_start_admin">
+                <div class="panel panel-default navbar-left">
                     <div class="panel-heading">
                         <h3 class="panel-title">Deathmatch Pregame</h3>
                     </div>
                     <div class="panel-body ">
+                        <h3 id='match_about_to_start' class="hide-me">
+                            <center>
+                                Game Starts In: <span id="match_begins_timer">10</span>
+                            </center>
+                        </h3>
                         <table width='100%'>
                             <tr>
                                 <td width=50% valign='top'>
@@ -155,6 +138,7 @@
                                         <li>Joe</li>
                                         <li>Timmy</li>
                                     </ol>
+                                    <button id='waiting_for_match_to_start_admin' onclick="start_match()" type="button" class="btn btn-lg btn-success">Start Match!</button>
                                 
                                 </td width=50%>
                                 <td>
@@ -176,24 +160,6 @@
                         
                         
             </div><!-- end waiting_for_match_to_start -->
-
-
-            <div id="match_about_to_start" class="full_page hide-me">
-
-                <div class="panel panel-default">
-                    <div class="panel-heading" style="text-transform: uppercase;">Deathmatch</div>
-                    <div class="panel-body">
-                        <p>Game Starts In:</p>
-                        <h1 id="match_begins_timer">10</h1>
-                    </div>
-
-                    <ul class="list-group">
-                        <li class="list-group-item">Match Length: <span class="match_rules_length"></span></li>
-                        <li class="list-group-item">Score: <br>+1 for Chest <br>+2 for Shoulder <br>+3 for Back</li>
-                    </ul>
-                </div>
-
-            </div><!-- end match_about_to_start -->
 
             <div id="match_in_progress" class="full_page hide-me">
 

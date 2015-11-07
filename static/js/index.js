@@ -55,11 +55,9 @@ function end_match() {
                 $("#waiting_for_match_to_start").removeClass('hide-me');
 
                 if (data.creator_player_id == localStorage.getItem("player_id")) {
-                    $("#waiting_for_match_to_start_nonadmin").addClass('hide-me');
                     $("#waiting_for_match_to_start_admin").removeClass('hide-me');
                 }
                 else {
-                    $("#waiting_for_match_to_start_nonadmin").removeClass('hide-me');
                     $("#waiting_for_match_to_start_admin").addClass('hide-me');
                 }
                 poll_match();
@@ -180,8 +178,8 @@ function poll_match() {
                     }
                     if (countdown_seconds_left > 0) {
                         if ($('#match_about_to_start').hasClass('hide-me')) {
-                            $(".full_page").addClass('hide-me');
                             $("#match_about_to_start").removeClass('hide-me');
+                            $("#waiting_for_match_to_start_admin").addClass('hide-me');
                         }
                         poll_match_delay = 800;
                     }
@@ -289,11 +287,9 @@ function create_or_join_room_submit() {
 
                 $("#waiting_for_match_to_start").removeClass('hide-me');
                 if (data.data.creator_player_id == localStorage.getItem("player_id")) {
-                    $("#waiting_for_match_to_start_nonadmin").addClass('hide-me');
                     $("#waiting_for_match_to_start_admin").removeClass('hide-me');
                 }
                 else {
-                    $("#waiting_for_match_to_start_nonadmin").removeClass('hide-me');
                     $("#waiting_for_match_to_start_admin").addClass('hide-me');
                 }
                 poll_match();
