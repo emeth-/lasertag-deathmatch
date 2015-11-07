@@ -186,16 +186,13 @@
 
 
                 <footer class="navbar-default navbar-fixed-bottom">
-                      <div class="container current_player_name" style="padding:0 !important; font-size: 22px;">
-                        Bob Dole
-                      </div>
                       <div class="container" style="padding:0 !important;">
                         <div class="btn-group btn-group-justified" role="group" aria-label="...">
                             <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-default">Score:<br><span id="player_score">123</span></button>
+                                <button type="button" class="btn btn-default" onclick="send_fake_shot()">Fake Shoot</button>
                             </div>
                             <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-default"><span id="player_status">Alive<br>&nbsp;</span></button>
+                                <button type="button" class="btn btn-default" onclick="receive_fake_hit()">Fake Get Hit</button>
                             </div>
                         </div>
                       </div>

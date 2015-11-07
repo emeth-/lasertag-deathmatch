@@ -129,7 +129,7 @@ def get_match_details(request):
                     score_increase += 2
                 elif hit_data['shot_location'] == "back":
                     score_increase += 3
-                Player.objects.filter(room_code=r.room_code, player_id=p.player_id).update(score=F('score') + score_increase)
+                Player.objects.filter(room_code=r.room_code, player_id=hit_data['player_id']).update(score=F('score') + score_increase)
 
     all_players = Player.objects.filter(room_code=r.room_code).order_by('-score')
     match_details = {

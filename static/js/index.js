@@ -78,14 +78,23 @@ function process_hit(player_id, shot_location) {
 }
 
 function receive_fake_hit() {
-    var player_id = other_players_in_room[Math.floor(Math.random() * other_players_in_room.length)];
-    var shot_location = shot_locations[Math.floor(Math.random() * shot_locations.length)];
-    process_hit(player_id, shot_location);
-    $("#mainnavbar_button").click();
+    if (other_players_in_room.length) {
+        var player_id = other_players_in_room[Math.floor(Math.random() * other_players_in_room.length)];
+        var shot_location = shot_locations[Math.floor(Math.random() * shot_locations.length)];
+        process_hit(player_id, shot_location);
+        $("#mainnavbar_button").click();
+        var audio = new Audio('/static/gothit.mp3');
+        audio.play();
+    }
+    else {
+        alert("No other players in the room!");
+    }
 }
 
 function send_fake_shot() {
-    console.log("todo send_fake_shot")
+    console.log("todo send_fake_shot");
+    var audio = new Audio('/static/firegun.mp3');
+    audio.play();
 }
 
 function cleanup_navbar() {
@@ -148,20 +157,19 @@ function poll_match() {
                     match_lives = data.data.lives_per_spawn;
 
                     var scores_htmlz = "";
-                    var players_ids = [];
+                    other_players_in_room = [];
                     for (var i=0; i<data.data.players.length; i++) {
-                        players_ids.push(data.data.players[i]['player_id']);
                         if (data.data.players[i]['player_id'] == localStorage.getItem("player_id")) {
                             $("#player_score").text(data.data.players[i]['score']);
                             scores_htmlz += '<tr bgcolor="#add8e6">';
                             $(".current_player_name").html(data.data.players[i]['alias']);
                         }
                         else {
+                            other_players_in_room.push(data.data.players[i]['player_id']);
                             scores_htmlz += '<tr>';
                         }
                         scores_htmlz += '<th scope="row">'+(i+1)+'</th><td>'+data.data.players[i]['alias']+'</td><td>'+data.data.players[i]['score']+'</td></tr>';
                     }
-                    other_players_in_room = players_ids;
                     $("#match_in_progress_scores").html(scores_htmlz);
                     var countdown_seconds_left = data.data.match_countdown - data.data.match_seconds_elapsed;
                     $("#match_begins_timer").text(countdown_seconds_left);
