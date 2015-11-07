@@ -124,11 +124,11 @@ def get_match_details(request):
                 new_hit.save()
                 score_increase = 0
                 if hit_data['shot_location'] == "chest":
-                    score_increase += 1
+                    score_increase += 5
                 elif hit_data['shot_location'] == "shoulder":
-                    score_increase += 2
+                    score_increase += 10
                 elif hit_data['shot_location'] == "back":
-                    score_increase += 3
+                    score_increase += 15
                 Player.objects.filter(room_code=r.room_code, player_id=hit_data['player_id']).update(score=F('score') + score_increase)
 
     all_players = Player.objects.filter(room_code=r.room_code).order_by('-score')
