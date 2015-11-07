@@ -209,10 +209,12 @@ function poll_match() {
                     //match not in progress
 
                     var players_ids = [];
+                    var place = 1;
                     var scores_htmlz = "";
                     for (var i=0; i<data.data.players.length; i++) {
                         players_ids.push(data.data.players[i]['player_id']);
                         if (data.data.players[i]['player_id'] == localStorage.getItem("player_id")) {
+                            $("#player_place").text(ordinal_suffix_of(i+1));
                             $("#player_score").text(data.data.players[i]['score']);
                             scores_htmlz += '<li bgcolor="#add8e6">';
                         }
@@ -233,6 +235,21 @@ function poll_match() {
             }
         });
     }
+}
+
+function ordinal_suffix_of(i) {
+    var j = i % 10,
+        k = i % 100;
+    if (j == 1 && k != 11) {
+        return i + "st";
+    }
+    if (j == 2 && k != 12) {
+        return i + "nd";
+    }
+    if (j == 3 && k != 13) {
+        return i + "rd";
+    }
+    return i + "th";
 }
 
 function start_match() {
